@@ -30,6 +30,7 @@ function Question() {
   const [isSuccessAttemptCompleted, setIsSuccessAttemptCompleted] =
     useState(false)
   const [question, setQuestion] = useState(null)
+  const [dummyquestion, setDummyquestion] = useState(null)
 
   const [startTime, setStartTime] = useState<any>('')
   const [answer, setAnswer] = useState('')
@@ -117,6 +118,7 @@ function Question() {
 
         if (ifSubmited !== 1) {
           setQuestion(result[0]?.question)
+          setDummyquestion(result[0]?.dummy)
 
           setStartTime(result[0]?.start_time)
           const answer = result[0]?.answer
@@ -346,6 +348,12 @@ function Question() {
       }
     })
   }
+
+  // const tempAns =answer;
+  const tempAns: any = dummyquestion && localeAwareUpperCase(dummyquestion)
+  const r = tempAns && tempAns?.split('')
+  const a = answer?.split('')
+
   return (
     <Gird2 style={{ marginTop: 20 }} container>
       <Gird2
@@ -395,6 +403,35 @@ function Question() {
               {question}
             </h5>
           </div>
+
+          {dummyquestion && (
+            <>
+              <div className="flex justify-center items-center">
+                <h4 className="font-medium leading-tight text-lg mt-0 text-white py-3 px-1">
+                  Hint
+                </h4>
+              </div>
+
+              <div className="flex justify-center mb-5">
+                {r.map((data: any, key: any) => {
+                  return (
+                    <div
+                      className={
+                        data === a[key]
+                          ? `w-14 h-14 border-solid border-2 flex items-center justify-center mx-0.5 text-4xl font-bold rounded dark:text-white correct shadowed bg-green-500 text-white border-green-500`
+                          : a.includes(data)
+                          ? ` w-14 h-14 border-solid border-2 flex items-center justify-center mx-0.5 text-4xl font-bold rounded dark:text-white present shadowed bg-yellow-500 text-white border-yellow-500`
+                          : `w-14 h-14 border-solid border-2 flex items-center justify-center mx-0.5 text-4xl font-bold rounded dark:text-white absent shadowed bg-slate-400 dark:bg-slate-700 text-white border-slate-400 dark:border-slate-700`
+                      }
+                    >
+                      <div className="letter-container">{data}</div>
+                    </div>
+                  )
+                })}
+              </div>
+            </>
+          )}
+
           {guesses?.length < MAX_CHALLENGES && !isSuccessAttemptCompleted ? (
             <>
               <Grid
